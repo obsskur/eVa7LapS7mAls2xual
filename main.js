@@ -8,9 +8,9 @@ const OSINT_DATABASE = [
         info: [
             "Twitter.com (Scraping Data) [2022-01]: [Username: Cluudix] [ProfileName: Claudia Marconell] [Email: cmarconell@gmail.com]",
             "Canva.com [2019-05]: [Username: ClaudiaMarconellSaez] [Email: cmarconell@gmail.com]",
-            "Trello.com [2024-01]: [Name: Claudia Marconell] [Email: cmarconell@gmail.com]", // Added comma
-            "500px.com [2017-11]: [Username: ClaudiaMarconell] [City: Camp de Túria] [Country: Spain] [Name: Claudia Marconell] [Email: cmarconell@gmail.com]", // Added comma
-            "Promo.com [2020-06]: [Name: Claudia Marconell Saez] [Gender: Female] [Email: cmarconell@gmail.com]", // Added comma
+            "Trello.com [2024-01]: [Name: Claudia Marconell] [Email: cmarconell@gmail.com]",
+            "500px.com [2017-11]: [Username: ClaudiaMarconell] [City: Camp de Túria] [Country: Spain] [Name: Claudia Marconell] [Email: cmarconell@gmail.com]",
+            "Promo.com [2020-06]: [Name: Claudia Marconell Saez] [Gender: Female] [Email: cmarconell@gmail.com]",
             "Instagram.com [2026-01]: [Username: cludix] [Email: cmarconell@gmail.com] [Location: Benimaclet, Valenciana, Spain ES]"
         ]
     },
@@ -43,7 +43,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // ================================
-// SEARCH FUNCTION (CASE-INSENSITIVE)
+// SEARCH FUNCTION (EXACT MATCH, CASE-INSENSITIVE)
 // ================================
 
 function searchData() {
@@ -64,12 +64,13 @@ function searchData() {
         lastSearchEl.textContent = searchTerm.length > 15 ? searchTerm.slice(0, 15) + "..." : searchTerm;
     }
 
+    // Changed .includes() to === for exact matching
     const matches = OSINT_DATABASE.filter(entry =>
-        entry.identifier.toLowerCase().includes(searchTerm)
+        entry.identifier.toLowerCase() === searchTerm
     );
 
     if (matches.length === 0) {
-        resultsDisplay.innerHTML = `<div class="no-results">No data found for "${escapeHtml(searchTerm)}"</div>`;
+        resultsDisplay.innerHTML = `<div class="no-results">No exact match found for "${escapeHtml(searchTerm)}"</div>`;
         return;
     }
 
