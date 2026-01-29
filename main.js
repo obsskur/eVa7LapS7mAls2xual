@@ -15,6 +15,15 @@ const OSINT_DATABASE = [
         ]
     },
     {
+        identifiers: ["ilovetrolling_gamer"],
+        info: [
+            "Stealer Logs [Origin: www.roblox.com, accounts.google.com] [Unknown Date]: [Username: ilovetrolling_gamer] [Password: Justinejacob@1432!]",
+            "Stealer Logs [Origin: www.roblox.com] [Unknown Date]: [Username: ilovetrolling_gamer] [Password: Justinejacob!]",
+            "Stealer Logs [Origin: www.roblox.com] [Unknown Date]: [Username: ilovetrolling_gamer] [Password: Justinejacob@2841!]",
+            "Stealer Logs [Origin: ox.com, www.roblox.com] [Unknown Date]: [Username: ilovetrolling_gamer] [Password: Justinejacob@0321!]"
+        ]
+    },
+    {
         identifiers: ["trebz13", "katelynt1@hotmail.com", "trebz"],
         info: [
             "Stealer Logs [Origin: android-app:net.openvpn.openvpn] [Unknown Date]: [Username: trebz13] [Password: trebz]",
