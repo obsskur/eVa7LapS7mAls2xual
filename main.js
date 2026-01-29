@@ -61,8 +61,10 @@ function searchData() {
         return;
     }
 
-    lastSearchEl.textContent =
-        searchTerm.length > 15 ? searchTerm.slice(0, 15) + "..." : searchTerm;
+    if (lastSearchEl) {
+        lastSearchEl.textContent =
+            searchTerm.length > 15 ? searchTerm.slice(0, 15) + "..." : searchTerm;
+    }
 
     const matches = OSINT_DATABASE.filter(entry =>
         entry.identifier.toLowerCase().includes(searchTerm)
