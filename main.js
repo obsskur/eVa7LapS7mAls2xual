@@ -8,9 +8,9 @@ const OSINT_DATABASE = [
         info: [
             "Twitter.com (Scraping Data) [2022-01]: [Username: Cluudix] [ProfileName: Claudia Marconell] [Email: cmarconell@gmail.com]",
             "Canva.com [2019-05]: [Username: ClaudiaMarconellSaez] [Email: cmarconell@gmail.com]",
-            "Trello.com [2024-01]: [Name: Claudia Marconell] [Email: cmarconell@gmail.com]"
-            "500px.com [2017-11]: [Username: ClaudiaMarconell] [City: Camp de Túria] [Country: Spain] [Name: Claudia Marconell] [Email: cmarconell@gmail.com]"
-            "Promo.com [2020-06]: [Name: Claudia Marconell Saez] [Gender: Female] [Email: cmarconell@gmail.com]"
+            "Trello.com [2024-01]: [Name: Claudia Marconell] [Email: cmarconell@gmail.com]",
+            "500px.com [2017-11]: [Username: ClaudiaMarconell] [City: Camp de Túria] [Country: Spain] [Name: Claudia Marconell] [Email: cmarconell@gmail.com]",
+            "Promo.com [2020-06]: [Name: Claudia Marconell Saez] [Gender: Female] [Email: cmarconell@gmail.com]",
             "Instagram.com [2026-01]: [Username: cludix] [Email: cmarconell@gmail.com] [Location: Benimaclet, Valenciana, Spain ES]"
         ]
     },
