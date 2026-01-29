@@ -15,12 +15,12 @@ const OSINT_DATABASE = [
         ]
     },
     {
-        identifiers: ["ilovetrolling_gamer"],
+        identifiers: ["whokeii", "joperjimenez@yahoo.com", "Julius Christopher", "Cabelto Jimenez", "joper jimenez", "f100000442853045"],
         info: [
-            "Stealer Logs [Origin: www.roblox.com, accounts.google.com] [Unknown Date]: [Username: ilovetrolling_gamer] [Password: Justinejacob@1432!]",
-            "Stealer Logs [Origin: www.roblox.com] [Unknown Date]: [Username: ilovetrolling_gamer] [Password: Justinejacob!]",
-            "Stealer Logs [Origin: www.roblox.com] [Unknown Date]: [Username: ilovetrolling_gamer] [Password: Justinejacob@2841!]",
-            "Stealer Logs [Origin: ox.com, www.roblox.com] [Unknown Date]: [Username: ilovetrolling_gamer] [Password: Justinejacob@0321!]"
+            "Twitter.com (Scraping Data) [2022-07]: [Username: Whokeii] [ProfileName: joper jimenez] [Email: joperjimenez@yahoo.com]",
+            "Disqus.com [2012-07]: [Email: joperjimenez@yahoo.com] [Password: may22jinxt]",
+            "Dailymotion.com [2016-10]: [Email: joperjimenez@yahoo.com] [Username: f100000442853045]",
+            "Deezer.com [2019-09]: [Email: joperjimenez@yahoo.com] [Username: Julius Christopher, Cabelto Jimenez] [DOB: 1993-01-01] [Country: PH]",
         ]
     },
     {
