@@ -2,12 +2,6 @@
 // TNI OSINT STATIC DATABASE
 // ================================
 
-// Data format:
-// [start]
-// identifier: string
-// info: array of strings
-// [end]
-
 const OSINT_DATABASE = [
     {
         identifier: "John Pork",
@@ -35,17 +29,13 @@ const OSINT_DATABASE = [
             "Notes: Uses public WiFi frequently"
         ]
     }
-
-    // 👉 add infinite entries here
 ];
 
 // ================================
-// SEARCH FUNCTION
+// SEARCH (CASE-INSENSITIVE)
 // ================================
 
 function searchData() {
-    if (!isAuthenticated) return;
-
     const searchTerm = document
         .getElementById("searchInput")
         .value
@@ -60,41 +50,34 @@ function searchData() {
         return;
     }
 
-    const result = OSINT_DATABASE.find(entry =>
-        entry.identifier.toLowerCase() === searchTerm
+    const matches = OSINT_DATABASE.filter(entry =>
+        entry.identifier.toLowerCase().includes(searchTerm)
     );
 
     document.getElementById("lastSearch").textContent =
         searchTerm.length > 15 ? searchTerm.slice(0, 15) + "..." : searchTerm;
 
-    if (!result) {
+    if (matches.length === 0) {
         resultsDisplay.innerHTML =
             `<div class="no-results">No data found for "${escapeHtml(searchTerm)}"</div>`;
         return;
     }
 
-    let infoHtml = result.info
-        .map(line => `<div class="data-content">${escapeHtml(line)}</div>`)
-        .join("<br>");
-
-    resultsDisplay.innerHTML = `
+    resultsDisplay.innerHTML = matches.map(entry => `
         <div class="result-card">
-            <div class="result-header">
-                <div class="identifier">${escapeHtml(result.identifier)}</div>
-            </div>
-            ${infoHtml}
+            <div class="identifier">${escapeHtml(entry.identifier)}</div>
+            ${entry.info.map(line =>
+                `<div class="data-content">${escapeHtml(line)}</div>`
+            ).join("")}
         </div>
-    `;
+    `).join("");
 }
 
 // ================================
-// STATS (STATIC)
+// STATS
 // ================================
 
-function updateStats() {
-    document.getElementById("totalEntries").textContent = OSINT_DATABASE.length;
-    document.getElementById("databaseSize").textContent = "STATIC";
-}
+document.getElementById("totalEntries").textContent = OSINT_DATABASE.length;
 
 // ================================
 // HELPERS
