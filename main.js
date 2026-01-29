@@ -4,7 +4,6 @@
 
 const OSINT_DATABASE = [
     {
-        // Use an array to store multiple search terms for one result
         identifiers: ["Cluudix", "cmarconell@gmail.com", "Claudia Marconell"],
         info: [
             "Twitter.com (Scraping Data) [2022-01]: [Username: Cluudix] [ProfileName: Claudia Marconell] [Email: cmarconell@gmail.com]",
@@ -51,7 +50,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // ================================
-// SEARCH FUNCTION (EXACT MATCH, MULTI-IDENTIFIER)
+// SEARCH FUNCTION
 // ================================
 
 function searchData() {
@@ -61,6 +60,7 @@ function searchData() {
 
     if (!inputEl || !resultsDisplay) return;
 
+    // trim() removes accidental spaces at start/end
     const searchTerm = inputEl.value.trim().toLowerCase();
 
     if (!searchTerm) {
@@ -69,19 +69,20 @@ function searchData() {
     }
 
     if (lastSearchEl) {
-        lastSearchEl.textContent = searchTerm.length > 15 ? searchTerm.slice(0, 15) + "..." : searchTerm;
+        lastSearchEl.textContent = searchTerm.length > 20 ? searchTerm.slice(0, 20) + "..." : searchTerm;
     }
 
-    // Logic: Checks if the searchTerm exactly matches ANY string in the identifiers array
-    const matches = OSINT_DATABASE.filter(entry =>
-        entry.identifiers.some(id => id.toLowerCase() === searchTerm)
-    );
+    // Filter logic: Check if any identifier in the array matches the search term
+    const matches = OSINT_DATABASE.filter(entry => {
+        return entry.identifiers.some(id => id.toLowerCase().trim() === searchTerm);
+    });
 
     if (matches.length === 0) {
         resultsDisplay.innerHTML = `<div class="no-results">No exact match found for "${escapeHtml(searchTerm)}"</div>`;
         return;
     }
 
+    // Render results
     resultsDisplay.innerHTML = matches.map(entry => `
         <div class="result-card">
             <div class="identifier">${escapeHtml(entry.identifiers[0])}</div>
