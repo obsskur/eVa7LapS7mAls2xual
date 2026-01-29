@@ -32,52 +32,38 @@ const OSINT_DATABASE = [
 ];
 
 // ================================
-// INIT AFTER DOM LOAD
+// INIT
 // ================================
 
 document.addEventListener("DOMContentLoaded", () => {
-    // set stats safely AFTER DOM exists
-    const total = document.getElementById("totalEntries");
-    if (total) total.textContent = OSINT_DATABASE.length;
-
-    // allow Enter key search
-    const input = document.getElementById("searchInput");
-    if (input) {
-        input.addEventListener("keydown", e => {
-            if (e.key === "Enter") searchData();
-        });
-    }
+    updateStats();
 });
 
 // ================================
-// SEARCH (CASE-INSENSITIVE + PARTIAL)
+// SEARCH FUNCTION (CASE-INSENSITIVE)
 // ================================
 
 function searchData() {
-    const input = document.getElementById("searchInput");
+    const inputEl = document.getElementById("searchInput");
     const resultsDisplay = document.getElementById("resultsDisplay");
-    const lastSearch = document.getElementById("lastSearch");
+    const lastSearchEl = document.getElementById("lastSearch");
 
-    if (!input || !resultsDisplay) return;
+    if (!inputEl || !resultsDisplay) return;
 
-    const searchTerm = input.value.trim().toLowerCase();
+    const searchTerm = inputEl.value.trim().toLowerCase();
 
     if (!searchTerm) {
         resultsDisplay.innerHTML =
-            `<div class="no-results">Enter an identifier to search</div>`;
+            '<div class="no-results">Enter an identifier to search</div>';
         return;
     }
+
+    lastSearchEl.textContent =
+        searchTerm.length > 15 ? searchTerm.slice(0, 15) + "..." : searchTerm;
 
     const matches = OSINT_DATABASE.filter(entry =>
         entry.identifier.toLowerCase().includes(searchTerm)
     );
-
-    if (lastSearch) {
-        lastSearch.textContent =
-            searchTerm.length > 15
-                ? searchTerm.slice(0, 15) + "..."
-                : searchTerm;
-    }
 
     if (matches.length === 0) {
         resultsDisplay.innerHTML =
@@ -93,6 +79,17 @@ function searchData() {
             ).join("")}
         </div>
     `).join("");
+}
+
+// ================================
+// STATS
+// ================================
+
+function updateStats() {
+    const totalEntriesEl = document.getElementById("totalEntries");
+    if (totalEntriesEl) {
+        totalEntriesEl.textContent = OSINT_DATABASE.length;
+    }
 }
 
 // ================================
