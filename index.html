@@ -36,66 +36,7 @@
             z-index: 999;
         }
 
-        /* LOGIN */
-        #loginScreen {
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.95);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 9999;
-        }
-
-        .login-container {
-            background: #111;
-            border: 1px solid #333;
-            padding: 40px;
-            width: 90%;
-            max-width: 420px;
-            box-shadow: 0 0 25px rgba(0,255,0,.25);
-        }
-
-        .login-container h1 {
-            text-align: center;
-            color: #00ff00;
-            margin-bottom: 10px;
-        }
-
-        .login-container p {
-            text-align: center;
-            color: #777;
-            margin-bottom: 25px;
-        }
-
-        .login-container input {
-            width: 100%;
-            padding: 12px;
-            background: #222;
-            border: 1px solid #333;
-            color: #00ff00;
-            margin-bottom: 15px;
-        }
-
-        .login-container button {
-            width: 100%;
-            padding: 12px;
-            background: #003300;
-            border: 1px solid #005500;
-            color: #00ff00;
-            cursor: pointer;
-        }
-
-        .error-message {
-            color: #ff4444;
-            text-align: center;
-            margin-top: 10px;
-            min-height: 18px;
-        }
-
-        /* MAIN */
         #mainInterface {
-            display: none;
             padding: 20px;
             max-width: 900px;
             margin: auto;
@@ -174,25 +115,6 @@
 
 <body class="terminal-effect">
 
-<!-- LOGIN -->
-<div id="loginScreen">
-    <div class="login-container">
-        <h1>TNI OSINT DATABASE</h1>
-        <p>Secure Access Required</p>
-        <input
-            type="password"
-            id="password"
-            placeholder="Access password"
-            autocomplete="off"
-        >
-        <button onclick="attemptLogin()">
-            <i class="fas fa-terminal"></i> INITIATE
-        </button>
-        <div class="error-message" id="loginError"></div>
-    </div>
-</div>
-
-<!-- MAIN -->
 <div id="mainInterface">
     <div class="header">
         <h1>TNI OSINT DATABASE</h1>
@@ -200,11 +122,7 @@
     </div>
 
     <div class="search-box">
-        <input
-            id="searchInput"
-            placeholder="Search identifier…"
-            autocomplete="off"
-        >
+        <input id="searchInput" placeholder="Search identifier…" autocomplete="off">
         <button onclick="searchData()">
             <i class="fas fa-search"></i> SEARCH
         </button>
@@ -224,8 +142,6 @@
     </div>
 </div>
 
-<!-- EXTERNAL JS ONLY -->
 <script src="main.js"></script>
-
 </body>
 </html>
