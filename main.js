@@ -31,7 +31,7 @@ const OSINT_DATABASE = [
         ]
     },
     {
-        identifiers: ["Pathalogic", "65.37.39.177", "pathalogic@gmail.com", "gderycehntf", "bonan1996@yahoo.com", "46.133.0.57". "NinaYancov", "Nina.Yancov", "Lala22"],
+        identifiers: ["Pathalogic", "65.37.39.177", "pathalogic@gmail.com", "gderycehntf", "bonan1996@yahoo.com", "46.133.0.57", "NinaYancov", "Nina.Yancov", "Lala22"],
         info: [
             "LiveJournal [2017-01]: [Username: pathalogic] [Password: Gari2388] [Email: pathalogic@gmail.com]",
             "Neopets.com [2013-05]: [Name: gderycehntf] [Password: ilikecheese66] [Country: US] [Email: bonan1996@yahoo.com] [DOB: 1976-06-01] [Username: pathalogic] [IP: 65.37.39.177]",
