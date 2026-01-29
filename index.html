@@ -396,6 +396,88 @@
             100% { transform: translate(0); }
         }
 
+        /* API Results Specific */
+        .api-results-section {
+            margin-top: 40px;
+            border-top: 1px solid #333;
+            padding-top: 20px;
+        }
+
+        .api-result-card {
+            background: #111;
+            border: 1px solid #444;
+            border-left: 4px solid #ff9900;
+            border-radius: 5px;
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+
+        .api-result-header {
+            color: #ff9900;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .roblox-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 5px;
+            border: 2px solid #00a2ff;
+            margin-right: 15px;
+            float: left;
+        }
+
+        .roblox-info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .info-item {
+            background: #222;
+            padding: 10px;
+            border-radius: 3px;
+            border-left: 3px solid #00a2ff;
+        }
+
+        .info-label {
+            color: #aaa;
+            font-size: 12px;
+            margin-bottom: 5px;
+        }
+
+        .info-value {
+            color: #fff;
+            font-weight: bold;
+        }
+
+        .online-status {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+
+        .online {
+            background: #00ff00;
+            box-shadow: 0 0 10px #00ff00;
+        }
+
+        .offline {
+            background: #ff3333;
+        }
+
+        .ingame {
+            background: #ff9900;
+            box-shadow: 0 0 10px #ff9900;
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .login-container {
@@ -413,6 +495,16 @@
             .stats {
                 flex-direction: column;
                 gap: 15px;
+            }
+            
+            .roblox-info-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .roblox-avatar {
+                float: none;
+                margin: 0 auto 15px;
+                display: block;
             }
         }
     </style>
@@ -446,10 +538,13 @@
         <!-- Search Section -->
         <div class="search-container">
             <div class="search-box">
-                <input type="text" id="searchInput" placeholder="Enter identifier (email, username, phone, etc.)..." autocomplete="off">
-                <button class="search-btn" onclick="searchData()">
-                    <i class="fas fa-search"></i> QUERY DATABASE
+                <input type="text" id="searchInput" placeholder="Enter identifier (email, username, phone, Roblox ID/Username)..." autocomplete="off">
+                <button class="search-btn" onclick="enhancedSearch()">
+                    <i class="fas fa-search"></i> ENHANCED SEARCH
                 </button>
+            </div>
+            <div style="margin-top: 10px; color: #666; font-size: 12px; text-align: center;">
+                <i class="fas fa-info-circle"></i> Supports: Local DB lookup & Roblox user check
             </div>
         </div>
 
@@ -486,7 +581,15 @@ Additional Notes: Subject uses VPN frequently"></textarea>
         <div class="results-container">
             <h2 class="section-title"><i class="fas fa-search"></i> QUERY RESULTS</h2>
             <div id="resultsDisplay">
-                <!-- Results will appear here -->
+                <!-- Local database results appear here -->
+            </div>
+            
+            <!-- API Results Section -->
+            <div id="apiResultsSection" class="api-results-section" style="display: none;">
+                <h2 class="section-title"><i class="fas fa-globe"></i> API RESULTS</h2>
+                <div id="apiResultsDisplay">
+                    <!-- API results appear here -->
+                </div>
             </div>
         </div>
 
@@ -514,14 +617,16 @@ Additional Notes: Subject uses VPN frequently"></textarea>
     </div>
 
     <script>
-        // Password Configuration
+        // ====================
+        // CORE CONFIGURATION
+        // ====================
         const SYSTEM_PASSWORD = "GodOfTNI7";
         let isAuthenticated = false;
-
-        // Database Structure
         let osintDatabase = JSON.parse(localStorage.getItem('tniOsintDatabase')) || [];
-        
-        // Login Function
+
+        // ====================
+        // LOGIN SYSTEM
+        // ====================
         function attemptLogin() {
             const passwordInput = document.getElementById('password').value;
             const errorElement = document.getElementById('loginError');
@@ -533,7 +638,6 @@ Additional Notes: Subject uses VPN frequently"></textarea>
                     document.getElementById('loginScreen').style.display = 'none';
                     document.getElementById('mainInterface').style.display = 'block';
                     updateStats();
-                    // Typewriter effect for welcome
                     typeWriter();
                 }, 500);
             } else {
@@ -547,14 +651,10 @@ Additional Notes: Subject uses VPN frequently"></textarea>
             }
         }
 
-        // Enter key for login
         document.getElementById('password').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                attemptLogin();
-            }
+            if (e.key === 'Enter') attemptLogin();
         });
 
-        // Typewriter effect
         function typeWriter() {
             const subtitle = document.querySelector('.subtitle');
             const originalText = subtitle.textContent;
@@ -571,7 +671,9 @@ Additional Notes: Subject uses VPN frequently"></textarea>
             type();
         }
 
-        // Add Data to Database
+        // ====================
+        // LOCAL DATABASE FUNCTIONS
+        // ====================
         function addData() {
             if (!isAuthenticated) return;
             
@@ -583,7 +685,6 @@ Additional Notes: Subject uses VPN frequently"></textarea>
                 return;
             }
             
-            // Check if identifier already exists
             const existingIndex = osintDatabase.findIndex(item => item.identifier === identifier);
             
             if (existingIndex !== -1) {
@@ -598,49 +699,32 @@ Additional Notes: Subject uses VPN frequently"></textarea>
                     identifier: identifier,
                     data: data,
                     timestamp: new Date().toISOString(),
-                    id: Date.now() // Unique ID for deletion
+                    id: Date.now()
                 });
             }
             
-            // Save to localStorage
             localStorage.setItem('tniOsintDatabase', JSON.stringify(osintDatabase));
-            
-            // Clear form
             clearForm();
-            
-            // Update stats
             updateStats();
-            
-            // Show confirmation
             showNotification(`Entry ${existingIndex !== -1 ? 'updated' : 'added'} successfully`);
         }
 
-        // Search Data
-        function searchData() {
-            if (!isAuthenticated) return;
-            
-            const searchTerm = document.getElementById('searchInput').value.trim().toLowerCase();
-            const resultsDisplay = document.getElementById('resultsDisplay');
-            
-            if (!searchTerm) {
-                resultsDisplay.innerHTML = '<div class="no-results">Enter search term to query database</div>';
-                return;
-            }
-            
-            // Search in database
-            const results = osintDatabase.filter(item => 
-                item.identifier.toLowerCase().includes(searchTerm) || 
-                item.data.toLowerCase().includes(searchTerm)
+        function searchLocalDatabase(searchTerm) {
+            return osintDatabase.filter(item => 
+                item.identifier.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                item.data.toLowerCase().includes(searchTerm.toLowerCase())
             );
+        }
+
+        function displayLocalResults(results) {
+            const resultsDisplay = document.getElementById('resultsDisplay');
+            if (!resultsDisplay) return;
             
-            // Update last search
-            document.getElementById('lastSearch').textContent = searchTerm.substring(0, 15) + (searchTerm.length > 15 ? '...' : '');
-            
-            // Display results
             if (results.length === 0) {
-                resultsDisplay.innerHTML = '<div class="no-results">No matches found for "' + searchTerm + '"</div>';
+                resultsDisplay.innerHTML = '<div class="no-results">No local database matches found</div>';
             } else {
-                let html = '';
+                let html = '<div style="margin-bottom: 20px; color: #00ff00; font-size: 18px;"><i class="fas fa-database"></i> Server Data</div>';
+                
                 results.forEach(item => {
                     html += `
                         <div class="result-card">
@@ -657,143 +741,361 @@ Additional Notes: Subject uses VPN frequently"></textarea>
                         </div>
                     `;
                 });
+                
                 resultsDisplay.innerHTML = html;
             }
         }
 
-        // Delete Entry
         function deleteEntry(id) {
             if (!isAuthenticated || !confirm("Permanently delete this entry?")) return;
             
             osintDatabase = osintDatabase.filter(item => item.id !== id);
             localStorage.setItem('tniOsintDatabase', JSON.stringify(osintDatabase));
-            searchData(); // Refresh results
+            enhancedSearch();
             updateStats();
             showNotification("Entry deleted");
         }
 
-        // Clear Form
         function clearForm() {
             document.getElementById('identifierInput').value = '';
             document.getElementById('dataInput').value = '';
         }
 
-        // Update Statistics
+        // ====================
+        // ROBLOX API FUNCTIONS
+        // ====================
+        async function checkRobloxUser(query) {
+            try {
+                let userId = query;
+                
+                // If query is not numeric, try to get user ID from username
+                if (!/^\d+$/.test(query)) {
+                    const idResponse = await fetch('https://users.roblox.com/v1/usernames/users', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            usernames: [query],
+                            excludeBannedUsers: false
+                        })
+                    });
+                    
+                    if (idResponse.ok) {
+                        const idData = await idResponse.json();
+                        if (idData.data && idData.data.length > 0) {
+                            userId = idData.data[0].id;
+                        } else {
+                            return { error: "Roblox user not found" };
+                        }
+                    } else {
+                        return { error: "Failed to lookup username" };
+                    }
+                }
+                
+                // Fetch user data
+                const userResponse = await fetch(`https://users.roblox.com/v1/users/${userId}`);
+                if (!userResponse.ok) {
+                    return { error: "Failed to fetch user data" };
+                }
+                
+                const userData = await userResponse.json();
+                
+                // Fetch avatar data
+                const avatarResponse = await fetch(`https://thumbnails.roblox.com/v1/users/avatar?userIds=${userId}&size=420x420&format=Png&isCircular=false`);
+                let avatarUrl = null;
+                if (avatarResponse.ok) {
+                    const avatarData = await avatarResponse.json();
+                    if (avatarData.data && avatarData.data.length > 0) {
+                        avatarUrl = avatarData.data[0].imageUrl;
+                    }
+                }
+                
+                // Fetch friends count
+                const friendsResponse = await fetch(`https://friends.roblox.com/v1/users/${userId}/friends/count`);
+                let friendsCount = 0;
+                if (friendsResponse.ok) {
+                    const friendsData = await friendsResponse.json();
+                    friendsCount = friendsData.count || 0;
+                }
+                
+                // Fetch groups
+                const groupsResponse = await fetch(`https://groups.roblox.com/v1/users/${userId}/groups/roles`);
+                let groups = [];
+                if (groupsResponse.ok) {
+                    const groupsData = await groupsResponse.json();
+                    groups = groupsData.data ? groupsData.data.slice(0, 5) : [];
+                }
+                
+                // Fetch presence (online status)
+                let presence = { userPresenceType: 0, lastLocation: "Offline" };
+                try {
+                    const presenceResponse = await fetch(`https://presence.roblox.com/v1/presence/users`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            userIds: [userId]
+                        })
+                    });
+                    
+                    if (presenceResponse.ok) {
+                        const presenceData = await presenceResponse.json();
+                        if (presenceData.userPresences && presenceData.userPresences.length > 0) {
+                            presence = presenceData.userPresences[0];
+                        }
+                    }
+                } catch (e) {
+                    console.log("Presence check failed:", e);
+                }
+                
+                return {
+                    success: true,
+                    data: {
+                        id: userData.id,
+                        username: userData.name,
+                        displayName: userData.displayName,
+                        description: userData.description || "No description",
+                        created: new Date(userData.created).toLocaleDateString(),
+                        isBanned: userData.isBanned,
+                        hasVerifiedBadge: userData.hasVerifiedBadge,
+                        avatarUrl: avatarUrl,
+                        friendsCount: friendsCount,
+                        groups: groups,
+                        presence: presence,
+                        profileUrl: `https://www.roblox.com/users/${userId}/profile`,
+                        lastUpdated: new Date().toLocaleString()
+                    }
+                };
+                
+            } catch (error) {
+                console.error("Roblox API error:", error);
+                return { error: "Failed to fetch Roblox data. User may not exist or API is down." };
+            }
+        }
+
+        function displayRobloxResults(robloxData, query) {
+            const apiSection = document.getElementById('apiResultsSection');
+            const apiDisplay = document.getElementById('apiResultsDisplay');
+            
+            if (!apiSection || !apiDisplay) return;
+            
+            apiSection.style.display = 'block';
+            
+            if (robloxData.error) {
+                apiDisplay.innerHTML = `
+                    <div class="api-result-card">
+                        <div class="api-result-header">
+                            <i class="fas fa-robot"></i> Roblox Lookup Failed
+                        </div>
+                        <div class="data-content" style="color: #ff3333;">
+                            <i class="fas fa-exclamation-triangle"></i> ${escapeHtml(robloxData.error)}
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+            
+            const data = robloxData.data;
+            const presenceType = data.presence.userPresenceType;
+            let status = "Offline";
+            let statusClass = "offline";
+            
+            if (presenceType === 2) {
+                status = "Online";
+                statusClass = "online";
+            } else if (presenceType === 3) {
+                status = "In-Game";
+                statusClass = "ingame";
+            }
+            
+            let groupsHtml = '';
+            if (data.groups && data.groups.length > 0) {
+                data.groups.forEach(group => {
+                    groupsHtml += `<div style="background: #222; padding: 5px 10px; border-radius: 3px; margin: 2px; display: inline-block; font-size: 12px;">
+                                    ${escapeHtml(group.group.name)} (${group.role.name})
+                                  </div>`;
+                });
+            } else {
+                groupsHtml = '<div style="color: #888; font-style: italic;">No groups found</div>';
+            }
+            
+            apiDisplay.innerHTML = `
+                <div class="api-result-card">
+                    <div class="api-result-header">
+                        <i class="fas fa-robot"></i> Roblox User: ${escapeHtml(data.username)} (ID: ${data.id})
+                    </div>
+                    
+                    ${data.avatarUrl ? `<img src="${data.avatarUrl}" class="roblox-avatar" alt="Avatar">` : ''}
+                    
+                    <div style="overflow: hidden;">
+                        <div style="margin-bottom: 15px;">
+                            <span class="online-status ${statusClass}"></span>
+                            <strong>Status:</strong> ${status}
+                            ${data.presence.lastLocation && data.presence.lastLocation !== "Offline" ? 
+                                `<div style="color: #aaa; font-size: 12px; margin-top: 5px;">
+                                    <i class="fas fa-map-marker-alt"></i> ${escapeHtml(data.presence.lastLocation)}
+                                </div>` : ''
+                            }
+                        </div>
+                        
+                        <div class="roblox-info-grid">
+                            <div class="info-item">
+                                <div class="info-label">Display Name</div>
+                                <div class="info-value">${escapeHtml(data.displayName)}</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Account Created</div>
+                                <div class="info-value">${data.created}</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Friends</div>
+                                <div class="info-value">${data.friendsCount}</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Verified</div>
+                                <div class="info-value">${data.hasVerifiedBadge ? '✅ Yes' : '❌ No'}</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Banned</div>
+                                <div class="info-value">${data.isBanned ? '🔴 Yes' : '🟢 No'}</div>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-top: 20px; clear: both;">
+                            <div style="color: #00a2ff; margin-bottom: 10px; font-size: 14px;">
+                                <i class="fas fa-users"></i> Groups (Top 5)
+                            </div>
+                            ${groupsHtml}
+                        </div>
+                        
+                        ${data.description && data.description !== "No description" ? `
+                            <div style="margin-top: 20px; padding: 10px; background: #222; border-radius: 3px;">
+                                <div style="color: #00a2ff; margin-bottom: 5px; font-size: 14px;">
+                                    <i class="fas fa-align-left"></i> Description
+                                </div>
+                                <div style="color: #ccc; font-size: 13px;">${escapeHtml(data.description)}</div>
+                            </div>
+                        ` : ''}
+                        
+                        <div style="margin-top: 20px; display: flex; gap: 10px;">
+                            <a href="${data.profileUrl}" target="_blank" style="
+                                background: #00a2ff;
+                                color: white;
+                                padding: 8px 15px;
+                                border-radius: 3px;
+                                text-decoration: none;
+                                font-size: 14px;
+                                display: inline-flex;
+                                align-items: center;
+                                gap: 5px;
+                            ">
+                                <i class="fas fa-external-link-alt"></i> View Profile
+                            </a>
+                            <button onclick="addRobloxToDatabase('${escapeHtml(data.username)}', ${data.id})" style="
+                                background: #003300;
+                                color: #00ff00;
+                                border: 1px solid #005500;
+                                padding: 8px 15px;
+                                border-radius: 3px;
+                                cursor: pointer;
+                                font-size: 14px;
+                                display: inline-flex;
+                                align-items: center;
+                                gap: 5px;
+                            ">
+                                <i class="fas fa-save"></i> Save to Database
+                            </button>
+                        </div>
+                        
+                        <div style="margin-top: 15px; color: #666; font-size: 12px; border-top: 1px solid #333; padding-top: 10px;">
+                            <i class="fas fa-info-circle"></i> Data fetched from Roblox Public API • Last updated: ${data.lastUpdated}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function addRobloxToDatabase(username, userId) {
+            if (!isAuthenticated) return;
+            
+            const identifier = `roblox:${username}`;
+            const existingIndex = osintDatabase.findIndex(item => item.identifier === identifier);
+            
+            if (existingIndex !== -1) {
+                if (!confirm("This Roblox user already exists in database. Update?")) return;
+            }
+            
+            const robloxData = {
+                username: username,
+                userId: userId,
+                profileUrl: `https://www.roblox.com/users/${userId}/profile`,
+                addedAt: new Date().toISOString(),
+                source: "Roblox API Lookup"
+            };
+            
+            if (existingIndex !== -1) {
+                osintDatabase[existingIndex].data = JSON.stringify(robloxData, null, 2);
+                osintDatabase[existingIndex].timestamp = new Date().toISOString();
+            } else {
+                osintDatabase.push({
+                    identifier: identifier,
+                    data: JSON.stringify(robloxData, null, 2),
+                    timestamp: new Date().toISOString(),
+                    id: Date.now()
+                });
+            }
+            
+            localStorage.setItem('tniOsintDatabase', JSON.stringify(osintDatabase));
+            updateStats();
+            showNotification(`Roblox user ${username} saved to database`);
+        }
+
+        // ====================
+        // ENHANCED SEARCH FUNCTION
+        // ====================
+        async function enhancedSearch() {
+            if (!isAuthenticated) return;
+            
+            const searchTerm = document.getElementById('searchInput').value.trim();
+            if (!searchTerm) {
+                document.getElementById('resultsDisplay').innerHTML = '<div class="no-results">Enter search term to query database</div>';
+                document.getElementById('apiResultsSection').style.display = 'none';
+                return;
+            }
+            
+            // Update last search stat
+            document.getElementById('lastSearch').textContent = searchTerm.substring(0, 15) + (searchTerm.length > 15 ? '...' : '');
+            
+            // 1. Search local database
+            const localResults = searchLocalDatabase(searchTerm);
+            displayLocalResults(localResults);
+            
+            // 2. Check if it might be a Roblox username/ID and search
+            document.getElementById('apiResultsSection').style.display = 'none';
+            document.getElementById('apiResultsDisplay').innerHTML = '<div style="color: #888; padding: 20px; text-align: center;">Checking external sources...</div>';
+            
+            // Simple heuristic for Roblox: numeric ID or common username pattern
+            const couldBeRoblox = /^\d+$/.test(searchTerm) || /^[a-zA-Z0-9_]{3,20}$/.test(searchTerm);
+            
+            if (couldBeRoblox) {
+                try {
+                    const robloxData = await checkRobloxUser(searchTerm);
+                    displayRobloxResults(robloxData, searchTerm);
+                } catch (error) {
+                    console.error("Roblox search failed:", error);
+                }
+            }
+        }
+
+        // ====================
+        // UTILITY FUNCTIONS
+        // ====================
         function updateStats() {
             if (!isAuthenticated) return;
             
             document.getElementById('totalEntries').textContent = osintDatabase.length;
-            
-            // Calculate database size
             const dataStr = JSON.stringify(osintDatabase);
             const bytes = new TextEncoder().encode(dataStr).length;
-            const kb = (bytes / 1024).toFixed(2);
-            document.getElementById('databaseSize').textContent = kb + 'KB';
-        }
-
-        // Show Notification
-        function showNotification(message) {
-            const notification = document.createElement('div');
-            notification.style.cssText = `
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                background: #003300;
-                color: #00ff00;
-                padding: 15px;
-                border: 1px solid #005500;
-                border-radius: 3px;
-                z-index: 10000;
-                font-size: 14px;
-                box-shadow: 0 0 15px rgba(0, 255, 0, 0.3);
-            `;
-            notification.innerHTML = `<i class="fas fa-check-circle"></i> ${message}`;
-            document.body.appendChild(notification);
-            
-            setTimeout(() => {
-                notification.style.opacity = '0';
-                setTimeout(() => notification.remove(), 300);
-            }, 3000);
-        }
-
-        // Escape HTML to prevent XSS
-        function escapeHtml(text) {
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
-        }
-
-        // Initialize
-        document.addEventListener('DOMContentLoaded', function() {
-            // Focus on password input
-            document.getElementById('password').focus();
-            
-            // Enter key for search
-            document.getElementById('searchInput').addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    searchData();
-                }
-            });
-            
-            // Pre-populate with example data if empty
-            if (osintDatabase.length === 0) {
-                osintDatabase = [
-                    {
-                        identifier: "example123@gmail.com",
-                        data: "Name: Alex Johnson\nLocation: San Francisco, CA\nPhone: (555) 987-6543\nIP History: 73.158.122.45, 104.28.135.67\nSocial Media: @alexj_insta, @alexj_twitter\nOccupation: Software Engineer\nAdditional Notes: Frequently uses coffee shop WiFi",
-                        timestamp: new Date().toISOString(),
-                        id: 1
-                    },
-                    {
-                        identifier: "shadow_user42",
-                        data: "Name: Unknown\nAlias: Shadow\nPlatforms: 4chan, Reddit (/u/shadow_anon)\nEmail: shadow42@protonmail.com\nVPN Usage: ExpressVPN, NordVPN\nPattern: Active 2AM-5AM EST\nThreat Level: Low",
-                        timestamp: new Date().toISOString(),
-                        id: 2
-                    }
-                ];
-                localStorage.setItem('tniOsintDatabase', JSON.stringify(osintDatabase));
-            }
-        });
-
-        // Export/Import functionality (optional)
-        function exportDatabase() {
-            if (!isAuthenticated) return;
-            
-            const dataStr = JSON.stringify(osintDatabase, null, 2);
-            const dataBlob = new Blob([dataStr], {type: 'application/json'});
-            const url = URL.createObjectURL(dataBlob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'tni_osint_database_' + new Date().toISOString().split('T')[0] + '.json';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-        }
-
-        function importDatabase(event) {
-            if (!isAuthenticated) return;
-            
-            const file = event.target.files[0];
-            if (!file) return;
-            
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                try {
-                    const importedData = JSON.parse(e.target.result);
-                    if (confirm(`Import ${importedData.length} entries? This will replace current database.`)) {
-                        osintDatabase = importedData;
-                        localStorage.setItem('tniOsintDatabase', JSON.stringify(osintDatabase));
-                        updateStats();
-                        searchData();
-                        showNotification("Database imported successfully");
-                    }
-                } catch (error) {
-                    alert("Invalid database file!");
-                }
-            };
-            reader.readAsText(file);
-        }
-    </script>
-</body>
-</html>
+            const kb = (bytes / 1024).to
