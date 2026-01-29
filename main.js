@@ -15,6 +15,13 @@ const OSINT_DATABASE = [
         ]
     },
     {
+        identifier: "trebz13",
+        info: [
+            "Stealer Logs [Origin: android-app:net.openvpn.openvpn] [Unknown Date]: [Username: trebz13] [Password: trebz]",
+            "Zynga.com [2019-09]: [Username: Trebz13] [Password: katelyn3] [Email: katelynt1@hotmail.com]"
+        ]
+    },
+    {
         identifier: "shadow_user42",
         info: [
             "Alias: Shadow",
