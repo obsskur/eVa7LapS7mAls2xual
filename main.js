@@ -20,7 +20,7 @@ const OSINT_DATABASE = [
             "Twitter.com (Scraping Data) [2022-07]: [Username: Whokeii] [ProfileName: joper jimenez] [Email: joperjimenez@yahoo.com]",
             "Disqus.com [2012-07]: [Email: joperjimenez@yahoo.com] [Password: may22jinxt]",
             "Dailymotion.com [2016-10]: [Email: joperjimenez@yahoo.com] [Username: f100000442853045]",
-            "Deezer.com [2019-09]: [Email: joperjimenez@yahoo.com] [Username: Julius Christopher, Cabelto Jimenez] [DOB: 1993-01-01] [Country: PH]",
+            "Deezer.com [2019-09]: [Email: joperjimenez@yahoo.com] [Username: Julius Christopher, Cabelto Jimenez] [DOB: 1993-01-01] [Country: PH]"
         ]
     },
     {
@@ -31,13 +31,23 @@ const OSINT_DATABASE = [
         ]
     },
     {
-        identifiers: ["Pathalogic", "65.37.39.177", "pathalogic@gmail.com", "gderycehntf", "bonan1996@yahoo.com", "46.133.0.57", "NinaYancov", "Nina.Yancov", "Lala22"],
+        identifiers: [
+            "Pathalogic", 
+            "65.37.39.177", 
+            "pathalogic@gmail.com", 
+            "gderycehntf", 
+            "bonan1996@yahoo.com", 
+            "46.133.0.57",
+            "NinaYancov", 
+            "Nina.Yancov", 
+            "Lala22"
+        ],
         info: [
             "LiveJournal [2017-01]: [Username: pathalogic] [Password: Gari2388] [Email: pathalogic@gmail.com]",
             "Neopets.com [2013-05]: [Name: gderycehntf] [Password: ilikecheese66] [Country: US] [Email: bonan1996@yahoo.com] [DOB: 1976-06-01] [Username: pathalogic] [IP: 65.37.39.177]",
             "Parapa.mail.ru [2016-08]: [Email: pathalogic@gmail.com] [Password: Gari2388]",
             "Twitter.com [2015-11]: [Email: pathalogic@gmail.com] [Password: Gari2388]",
-            "Wattpad.com [2020-05]: [Email: pathalogic@gmail.com] [Password: Gari2388] [IP: 46.133.0.57] [Username: NinaYancov], [Country: UA] ",
+            "Wattpad.com [2020-05]: [Email: pathalogic@gmail.com] [Password: Gari2388] [IP: 46.133.0.57] [Username: NinaYancov] [Country: UA]",
             "Faucethub.io [Unknown Date]: [Email: pathalogic@gmail.com] [Password: Nani2308]",
             "Wattpad.com [2020-05]: [Email: pathalogic@gmail.com] [Password: gari238]",
             "Deezer.com [2019-09]: [Username: Nina.Yancov] [Country: GB] [Email: pathalogic@gmail.com]",
@@ -76,7 +86,6 @@ function searchData() {
 
     if (!inputEl || !resultsDisplay) return;
 
-    // trim() removes accidental spaces at start/end
     const searchTerm = inputEl.value.trim().toLowerCase();
 
     if (!searchTerm) {
@@ -88,7 +97,7 @@ function searchData() {
         lastSearchEl.textContent = searchTerm.length > 20 ? searchTerm.slice(0, 20) + "..." : searchTerm;
     }
 
-    // Filter logic: Check if any identifier in the array matches the search term
+    // Filter logic: Checks for exact match across the identifiers array
     const matches = OSINT_DATABASE.filter(entry => {
         return entry.identifiers.some(id => id.toLowerCase().trim() === searchTerm);
     });
@@ -98,7 +107,6 @@ function searchData() {
         return;
     }
 
-    // Render results
     resultsDisplay.innerHTML = matches.map(entry => `
         <div class="result-card">
             <div class="identifier">${escapeHtml(entry.identifiers[0])}</div>
