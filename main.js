@@ -4,7 +4,8 @@
 
 const OSINT_DATABASE = [
     {
-        identifier: "Cluudix",
+        // Use an array to store multiple search terms for one result
+        identifiers: ["Cluudix", "cmarconell@gmail.com", "Claudia Marconell"],
         info: [
             "Twitter.com (Scraping Data) [2022-01]: [Username: Cluudix] [ProfileName: Claudia Marconell] [Email: cmarconell@gmail.com]",
             "Canva.com [2019-05]: [Username: ClaudiaMarconellSaez] [Email: cmarconell@gmail.com]",
@@ -15,14 +16,14 @@ const OSINT_DATABASE = [
         ]
     },
     {
-        identifier: "trebz13",
+        identifiers: ["trebz13", "katelynt1@hotmail.com", "trebz"],
         info: [
             "Stealer Logs [Origin: android-app:net.openvpn.openvpn] [Unknown Date]: [Username: trebz13] [Password: trebz]",
             "Zynga.com [2019-09]: [Username: Trebz13] [Password: katelyn3] [Email: katelynt1@hotmail.com]"
         ]
     },
     {
-        identifier: "shadow_user42",
+        identifiers: ["shadow_user42", "Shadow"],
         info: [
             "Alias: Shadow",
             "Platforms: 4chan, Reddit",
@@ -31,7 +32,7 @@ const OSINT_DATABASE = [
         ]
     },
     {
-        identifier: "example123@gmail.com",
+        identifiers: ["example123@gmail.com", "Alex Johnson"],
         info: [
             "Name: Alex Johnson",
             "Location: San Francisco, CA",
@@ -50,7 +51,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // ================================
-// SEARCH FUNCTION (EXACT MATCH, CASE-INSENSITIVE)
+// SEARCH FUNCTION (EXACT MATCH, MULTI-IDENTIFIER)
 // ================================
 
 function searchData() {
@@ -71,9 +72,9 @@ function searchData() {
         lastSearchEl.textContent = searchTerm.length > 15 ? searchTerm.slice(0, 15) + "..." : searchTerm;
     }
 
-    // Changed .includes() to === for exact matching
+    // Logic: Checks if the searchTerm exactly matches ANY string in the identifiers array
     const matches = OSINT_DATABASE.filter(entry =>
-        entry.identifier.toLowerCase() === searchTerm
+        entry.identifiers.some(id => id.toLowerCase() === searchTerm)
     );
 
     if (matches.length === 0) {
@@ -83,7 +84,7 @@ function searchData() {
 
     resultsDisplay.innerHTML = matches.map(entry => `
         <div class="result-card">
-            <div class="identifier">${escapeHtml(entry.identifier)}</div>
+            <div class="identifier">${escapeHtml(entry.identifiers[0])}</div>
             ${entry.info.map(line => `<div class="data-content">${escapeHtml(line)}</div>`).join("")}
         </div>
     `).join("");
