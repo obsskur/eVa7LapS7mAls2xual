@@ -31,12 +31,19 @@ const OSINT_DATABASE = [
         ]
     },
     {
-        identifiers: ["shadow_user42", "Shadow"],
+        identifiers: ["Pathalogic", "65.37.39.177", "pathalogic@gmail.com", "gderycehntf", "bonan1996@yahoo.com", "46.133.0.57". "NinaYancov", "Nina.Yancov", "Lala22"],
         info: [
-            "Alias: Shadow",
-            "Platforms: 4chan, Reddit",
-            "VPN Usage: ExpressVPN, NordVPN",
-            "Threat Level: Low"
+            "LiveJournal [2017-01]: [Username: pathalogic] [Password: Gari2388] [Email: pathalogic@gmail.com]",
+            "Neopets.com [2013-05]: [Name: gderycehntf] [Password: ilikecheese66] [Country: US] [Email: bonan1996@yahoo.com] [DOB: 1976-06-01] [Username: pathalogic] [IP: 65.37.39.177]",
+            "Parapa.mail.ru [2016-08]: [Email: pathalogic@gmail.com] [Password: Gari2388]",
+            "Twitter.com [2015-11]: [Email: pathalogic@gmail.com] [Password: Gari2388]",
+            "Wattpad.com [2020-05]: [Email: pathalogic@gmail.com] [Password: Gari2388] [IP: 46.133.0.57] [Username: NinaYancov], [Country: UA] ",
+            "Faucethub.io [Unknown Date]: [Email: pathalogic@gmail.com] [Password: Nani2308]",
+            "Wattpad.com [2020-05]: [Email: pathalogic@gmail.com] [Password: gari238]",
+            "Deezer.com [2019-09]: [Username: Nina.Yancov] [Country: GB] [Email: pathalogic@gmail.com]",
+            "ClearVoiceSurveys.com [2015-07]: [DOB: 1988-08-23] [Email: pathalogic@gmail.com]",
+            "Appen.com [2020-06]: [Name: Nani] [Email: pathalogic@gmail.com]",
+            "GamesOfDesire [2021-12]: [Username: Lala22] [Password: gari2388] [Email: pathalogic@gmail.com]"
         ]
     },
     {
