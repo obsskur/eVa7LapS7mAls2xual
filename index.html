@@ -2,171 +2,116 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <title>TNI OSINT Database</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TNI OSINT Database - Secure Access</title>
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Courier New', monospace;
+            font-family: "Courier New", monospace;
         }
 
         body {
-            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+            background: linear-gradient(135deg, #0a0a0a, #1a1a1a);
             color: #e0e0e0;
             min-height: 100vh;
-            overflow-x: hidden;
         }
 
         .terminal-effect::before {
             content: "";
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            inset: 0;
             background: repeating-linear-gradient(
                 0deg,
-                rgba(0, 0, 0, 0.15) 0px,
-                rgba(0, 0, 0, 0.15) 1px,
+                rgba(0,0,0,0.15) 0px,
+                rgba(0,0,0,0.15) 1px,
                 transparent 1px,
                 transparent 2px
             );
             pointer-events: none;
-            z-index: 1000;
+            z-index: 999;
         }
 
-        /* Login Screen */
+        /* LOGIN */
         #loginScreen {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.95);
+            inset: 0;
+            background: rgba(0,0,0,0.95);
             display: flex;
-            justify-content: center;
             align-items: center;
+            justify-content: center;
             z-index: 9999;
-            transition: opacity 0.5s;
         }
 
         .login-container {
             background: #111;
-            padding: 40px;
-            border-radius: 5px;
             border: 1px solid #333;
-            box-shadow: 0 0 30px rgba(0, 255, 0, 0.2);
+            padding: 40px;
             width: 90%;
-            max-width: 500px;
+            max-width: 420px;
+            box-shadow: 0 0 25px rgba(0,255,0,.25);
         }
 
-        .login-header {
+        .login-container h1 {
             text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .login-header h1 {
             color: #00ff00;
-            font-size: 24px;
             margin-bottom: 10px;
-            text-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
         }
 
-        .login-header p {
-            color: #888;
-            font-size: 14px;
+        .login-container p {
+            text-align: center;
+            color: #777;
+            margin-bottom: 25px;
         }
 
-        .input-group {
-            margin-bottom: 20px;
-        }
-
-        .input-group label {
-            display: block;
-            margin-bottom: 8px;
-            color: #ccc;
-            font-size: 14px;
-        }
-
-        .input-group input {
+        .login-container input {
             width: 100%;
             padding: 12px;
             background: #222;
             border: 1px solid #333;
-            border-radius: 3px;
             color: #00ff00;
-            font-size: 16px;
-            letter-spacing: 1px;
+            margin-bottom: 15px;
         }
 
-        .input-group input:focus {
-            outline: none;
-            border-color: #00ff00;
-            box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
-        }
-
-        .login-btn {
+        .login-container button {
             width: 100%;
             padding: 12px;
             background: #003300;
-            color: #00ff00;
             border: 1px solid #005500;
-            border-radius: 3px;
-            font-size: 16px;
+            color: #00ff00;
             cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .login-btn:hover {
-            background: #005500;
-            box-shadow: 0 0 15px rgba(0, 255, 0, 0.4);
         }
 
         .error-message {
-            color: #ff3333;
+            color: #ff4444;
             text-align: center;
-            margin-top: 15px;
-            font-size: 14px;
-            min-height: 20px;
+            margin-top: 10px;
+            min-height: 18px;
         }
 
-        /* Main Interface */
+        /* MAIN */
         #mainInterface {
             display: none;
             padding: 20px;
+            max-width: 900px;
+            margin: auto;
         }
 
         .header {
             text-align: center;
             margin-bottom: 40px;
-            padding-bottom: 20px;
             border-bottom: 1px solid #333;
-        }
-
-        .header h1 {
-            color: #fff;
-            font-size: 32px;
-            margin-bottom: 10px;
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
-        }
-
-        .header .subtitle {
-            color: #888;
-            font-size: 14px;
-        }
-
-        .search-container {
-            max-width: 800px;
-            margin: 0 auto 40px;
+            padding-bottom: 20px;
         }
 
         .search-box {
             display: flex;
             gap: 10px;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
         }
 
         .search-box input {
@@ -174,626 +119,113 @@
             padding: 15px;
             background: #111;
             border: 1px solid #333;
-            border-radius: 3px;
             color: #fff;
-            font-size: 16px;
         }
 
-        .search-box input:focus {
-            outline: none;
-            border-color: #00ff00;
-            box-shadow: 0 0 15px rgba(0, 255, 0, 0.3);
-        }
-
-        .search-btn {
+        .search-box button {
             padding: 15px 25px;
             background: #003300;
-            color: #00ff00;
             border: 1px solid #005500;
-            border-radius: 3px;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .search-btn:hover {
-            background: #005500;
-            box-shadow: 0 0 15px rgba(0, 255, 0, 0.4);
-        }
-
-        /* Data Management */
-        .data-management {
-            background: #111;
-            border: 1px solid #333;
-            border-radius: 5px;
-            padding: 25px;
-            margin-bottom: 40px;
-            max-width: 800px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        .section-title {
             color: #00ff00;
-            margin-bottom: 20px;
-            font-size: 20px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .data-form {
-            display: grid;
-            gap: 15px;
-        }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .form-group label {
-            color: #ccc;
-            font-size: 14px;
-        }
-
-        .form-group input,
-        .form-group textarea {
-            padding: 12px;
-            background: #222;
-            border: 1px solid #333;
-            border-radius: 3px;
-            color: #fff;
-            font-size: 14px;
-        }
-
-        .form-group textarea {
-            min-height: 100px;
-            resize: vertical;
-        }
-
-        .form-actions {
-            display: flex;
-            gap: 10px;
-            margin-top: 10px;
-        }
-
-        .form-btn {
-            flex: 1;
-            padding: 12px;
-            border: none;
-            border-radius: 3px;
             cursor: pointer;
-            font-weight: bold;
-            transition: all 0.3s;
-        }
-
-        .add-btn {
-            background: #003300;
-            color: #00ff00;
-            border: 1px solid #005500;
-        }
-
-        .add-btn:hover {
-            background: #005500;
-        }
-
-        .clear-btn {
-            background: #330000;
-            color: #ff3333;
-            border: 1px solid #550000;
-        }
-
-        .clear-btn:hover {
-            background: #550000;
-        }
-
-        /* Results Display */
-        .results-container {
-            max-width: 800px;
-            margin: 0 auto;
         }
 
         .result-card {
             background: #111;
             border: 1px solid #333;
-            border-radius: 5px;
-            padding: 25px;
+            padding: 20px;
             margin-bottom: 20px;
-            transition: all 0.3s;
-        }
-
-        .result-card:hover {
-            border-color: #00ff00;
-            box-shadow: 0 0 20px rgba(0, 255, 0, 0.1);
-        }
-
-        .result-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid #333;
         }
 
         .identifier {
             color: #00ff00;
             font-size: 18px;
-            font-weight: bold;
-        }
-
-        .delete-btn {
-            background: #330000;
-            color: #ff3333;
-            border: 1px solid #550000;
-            padding: 5px 15px;
-            border-radius: 3px;
-            cursor: pointer;
-            font-size: 12px;
-        }
-
-        .delete-btn:hover {
-            background: #550000;
+            margin-bottom: 10px;
         }
 
         .data-content {
             color: #ccc;
-            line-height: 1.6;
-            white-space: pre-wrap;
+            margin-bottom: 6px;
         }
 
         .no-results {
             text-align: center;
-            color: #888;
-            padding: 40px;
+            color: #777;
             font-style: italic;
+            padding: 40px;
         }
 
-        /* Stats */
         .stats {
-            display: flex;
-            justify-content: center;
-            gap: 30px;
             margin-top: 30px;
-            padding-top: 20px;
+            display: flex;
+            justify-content: space-around;
             border-top: 1px solid #333;
-            color: #888;
-            font-size: 14px;
-        }
-
-        .stat-item {
-            text-align: center;
+            padding-top: 20px;
+            color: #777;
         }
 
         .stat-value {
             color: #00ff00;
             font-size: 24px;
-            font-weight: bold;
-        }
-
-        /* Footer */
-        .footer {
             text-align: center;
-            margin-top: 50px;
-            padding-top: 20px;
-            border-top: 1px solid #333;
-            color: #555;
-            font-size: 12px;
-        }
-
-        /* Glitch Effect */
-        .glitch {
-            position: relative;
-            animation: glitch 5s infinite;
-        }
-
-        @keyframes glitch {
-            0% { transform: translate(0); }
-            1% { transform: translate(-2px, 2px); }
-            2% { transform: translate(2px, -2px); }
-            3% { transform: translate(0); }
-            100% { transform: translate(0); }
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .login-container {
-                padding: 20px;
-            }
-            
-            .search-box {
-                flex-direction: column;
-            }
-            
-            .form-actions {
-                flex-direction: column;
-            }
-            
-            .stats {
-                flex-direction: column;
-                gap: 15px;
-            }
         }
     </style>
 </head>
+
 <body class="terminal-effect">
-    <!-- Login Screen -->
-    <div id="loginScreen">
-        <div class="login-container">
-            <div class="login-header">
-                <h1 class="glitch">TNI OSINT DATABASE</h1>
-                <p>Secure Access Required</p>
-            </div>
-            <div class="input-group">
-                <label for="password"><i class="fas fa-key"></i> ACCESS PASSWORD</label>
-                <input type="password" id="password" placeholder="Enter system password..." autocomplete="off">
-            </div>
-            <button class="login-btn" onclick="attemptLogin()">
-                <i class="fas fa-terminal"></i> INITIATE SYSTEM
-            </button>
-            <div class="error-message" id="loginError"></div>
-        </div>
+
+<!-- LOGIN -->
+<div id="loginScreen">
+    <div class="login-container">
+        <h1>TNI OSINT DATABASE</h1>
+        <p>Secure Access Required</p>
+        <input
+            type="password"
+            id="password"
+            placeholder="Access password"
+            autocomplete="off"
+        >
+        <button onclick="attemptLogin()">
+            <i class="fas fa-terminal"></i> INITIATE
+        </button>
+        <div class="error-message" id="loginError"></div>
+    </div>
+</div>
+
+<!-- MAIN -->
+<div id="mainInterface">
+    <div class="header">
+        <h1>TNI OSINT DATABASE</h1>
+        <p>READ-ONLY INTELLIGENCE QUERY SYSTEM</p>
     </div>
 
-    <!-- Main Interface -->
-    <div id="mainInterface">
-        <div class="header">
-            <h1 class="glitch">TNI OSINT DATABASE v1.0</h1>
-            <div class="subtitle">SECURE INTELLIGENCE MANAGEMENT SYSTEM</div>
-        </div>
-
-        <!-- Search Section -->
-        <div class="search-container">
-            <div class="search-box">
-                <input type="text" id="searchInput" placeholder="Enter identifier (email, username, phone, etc.)..." autocomplete="off">
-                <button class="search-btn" onclick="searchData()">
-                    <i class="fas fa-search"></i> QUERY DATABASE
-                </button>
-            </div>
-        </div>
-
-        <!-- Data Management -->
-        <div class="data-management">
-            <h2 class="section-title"><i class="fas fa-database"></i> DATABASE MANAGEMENT</h2>
-            <div class="data-form">
-                <div class="form-group">
-                    <label for="identifierInput">IDENTIFIER *</label>
-                    <input type="text" id="identifierInput" placeholder="example123@gmail.com" autocomplete="off">
-                </div>
-                <div class="form-group">
-                    <label for="dataInput">INTELLIGENCE DATA *</label>
-                    <textarea id="dataInput" placeholder="Enter all gathered intelligence here...
-Name: John Doe
-Location: New York, NY
-Phone: (555) 123-4567
-IP History: 192.168.1.1, 10.0.0.1
-Social Media: @johndoe_insta, @johndoe_twitter
-Additional Notes: Subject uses VPN frequently"></textarea>
-                </div>
-                <div class="form-actions">
-                    <button class="form-btn add-btn" onclick="addData()">
-                        <i class="fas fa-plus"></i> ADD TO DATABASE
-                    </button>
-                    <button class="form-btn clear-btn" onclick="clearForm()">
-                        <i class="fas fa-eraser"></i> CLEAR FORM
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Results Display -->
-        <div class="results-container">
-            <h2 class="section-title"><i class="fas fa-search"></i> QUERY RESULTS</h2>
-            <div id="resultsDisplay">
-                <!-- Results will appear here -->
-            </div>
-        </div>
-
-        <!-- Stats -->
-        <div class="stats">
-            <div class="stat-item">
-                <div class="stat-value" id="totalEntries">0</div>
-                <div>TOTAL ENTRIES</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-value" id="lastSearch">-</div>
-                <div>LAST SEARCH</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-value" id="databaseSize">0KB</div>
-                <div>DATABASE SIZE</div>
-            </div>
-        </div>
-
-        <!-- Footer -->
-        <div class="footer">
-            <p>TNI OSINT SYSTEM • ENCRYPTED LOCAL STORAGE • ACCESS LOGGED</p>
-            <p>System Status: <span style="color:#00ff00;">OPERATIONAL</span> | Connection: SECURE</p>
-        </div>
+    <div class="search-box">
+        <input
+            id="searchInput"
+            placeholder="Search identifier…"
+            autocomplete="off"
+        >
+        <button onclick="searchData()">
+            <i class="fas fa-search"></i> SEARCH
+        </button>
     </div>
 
-    <script>
-        // Password Configuration
-        const SYSTEM_PASSWORD = "GodOfTNI7";
-        let isAuthenticated = false;
+    <div id="resultsDisplay"></div>
 
-        // Database Structure
-        let osintDatabase = JSON.parse(localStorage.getItem('tniOsintDatabase')) || [];
-        
-        // Login Function
-        function attemptLogin() {
-            const passwordInput = document.getElementById('password').value;
-            const errorElement = document.getElementById('loginError');
-            
-            if (passwordInput === SYSTEM_PASSWORD) {
-                isAuthenticated = true;
-                document.getElementById('loginScreen').style.opacity = '0';
-                setTimeout(() => {
-                    document.getElementById('loginScreen').style.display = 'none';
-                    document.getElementById('mainInterface').style.display = 'block';
-                    updateStats();
-                    // Typewriter effect for welcome
-                    typeWriter();
-                }, 500);
-            } else {
-                errorElement.textContent = "ACCESS DENIED: Invalid credentials";
-                document.getElementById('password').value = '';
-                document.getElementById('password').style.borderColor = '#ff3333';
-                setTimeout(() => {
-                    errorElement.textContent = '';
-                    document.getElementById('password').style.borderColor = '#333';
-                }, 3000);
-            }
-        }
+    <div class="stats">
+        <div>
+            <div class="stat-value" id="totalEntries">0</div>
+            TOTAL ENTRIES
+        </div>
+        <div>
+            <div class="stat-value" id="lastSearch">-</div>
+            LAST SEARCH
+        </div>
+    </div>
+</div>
 
-        // Enter key for login
-        document.getElementById('password').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                attemptLogin();
-            }
-        });
+<!-- EXTERNAL JS ONLY -->
+<script src="main.js"></script>
 
-        // Typewriter effect
-        function typeWriter() {
-            const subtitle = document.querySelector('.subtitle');
-            const originalText = subtitle.textContent;
-            subtitle.textContent = '';
-            let i = 0;
-            
-            function type() {
-                if (i < originalText.length) {
-                    subtitle.textContent += originalText.charAt(i);
-                    i++;
-                    setTimeout(type, 50);
-                }
-            }
-            type();
-        }
-
-        // Add Data to Database
-        function addData() {
-            if (!isAuthenticated) return;
-            
-            const identifier = document.getElementById('identifierInput').value.trim();
-            const data = document.getElementById('dataInput').value.trim();
-            
-            if (!identifier || !data) {
-                alert("Both identifier and data are required!");
-                return;
-            }
-            
-            // Check if identifier already exists
-            const existingIndex = osintDatabase.findIndex(item => item.identifier === identifier);
-            
-            if (existingIndex !== -1) {
-                if (confirm("Identifier already exists. Update existing entry?")) {
-                    osintDatabase[existingIndex].data = data;
-                    osintDatabase[existingIndex].timestamp = new Date().toISOString();
-                } else {
-                    return;
-                }
-            } else {
-                osintDatabase.push({
-                    identifier: identifier,
-                    data: data,
-                    timestamp: new Date().toISOString(),
-                    id: Date.now() // Unique ID for deletion
-                });
-            }
-            
-            // Save to localStorage
-            localStorage.setItem('tniOsintDatabase', JSON.stringify(osintDatabase));
-            
-            // Clear form
-            clearForm();
-            
-            // Update stats
-            updateStats();
-            
-            // Show confirmation
-            showNotification(`Entry ${existingIndex !== -1 ? 'updated' : 'added'} successfully`);
-        }
-
-        // Search Data
-        function searchData() {
-            if (!isAuthenticated) return;
-            
-            const searchTerm = document.getElementById('searchInput').value.trim().toLowerCase();
-            const resultsDisplay = document.getElementById('resultsDisplay');
-            
-            if (!searchTerm) {
-                resultsDisplay.innerHTML = '<div class="no-results">Enter search term to query database</div>';
-                return;
-            }
-            
-            // Search in database
-            const results = osintDatabase.filter(item => 
-                item.identifier.toLowerCase().includes(searchTerm) || 
-                item.data.toLowerCase().includes(searchTerm)
-            );
-            
-            // Update last search
-            document.getElementById('lastSearch').textContent = searchTerm.substring(0, 15) + (searchTerm.length > 15 ? '...' : '');
-            
-            // Display results
-            if (results.length === 0) {
-                resultsDisplay.innerHTML = '<div class="no-results">No matches found for "' + searchTerm + '"</div>';
-            } else {
-                let html = '';
-                results.forEach(item => {
-                    html += `
-                        <div class="result-card">
-                            <div class="result-header">
-                                <div class="identifier">${escapeHtml(item.identifier)}</div>
-                                <button class="delete-btn" onclick="deleteEntry(${item.id})">
-                                    <i class="fas fa-trash"></i> DELETE
-                                </button>
-                            </div>
-                            <div class="data-content">${escapeHtml(item.data).replace(/\n/g, '<br>')}</div>
-                            <div style="margin-top: 15px; color: #666; font-size: 12px;">
-                                Last Updated: ${new Date(item.timestamp).toLocaleString()}
-                            </div>
-                        </div>
-                    `;
-                });
-                resultsDisplay.innerHTML = html;
-            }
-        }
-
-        // Delete Entry
-        function deleteEntry(id) {
-            if (!isAuthenticated || !confirm("Permanently delete this entry?")) return;
-            
-            osintDatabase = osintDatabase.filter(item => item.id !== id);
-            localStorage.setItem('tniOsintDatabase', JSON.stringify(osintDatabase));
-            searchData(); // Refresh results
-            updateStats();
-            showNotification("Entry deleted");
-        }
-
-        // Clear Form
-        function clearForm() {
-            document.getElementById('identifierInput').value = '';
-            document.getElementById('dataInput').value = '';
-        }
-
-        // Update Statistics
-        function updateStats() {
-            if (!isAuthenticated) return;
-            
-            document.getElementById('totalEntries').textContent = osintDatabase.length;
-            
-            // Calculate database size
-            const dataStr = JSON.stringify(osintDatabase);
-            const bytes = new TextEncoder().encode(dataStr).length;
-            const kb = (bytes / 1024).toFixed(2);
-            document.getElementById('databaseSize').textContent = kb + 'KB';
-        }
-
-        // Show Notification
-        function showNotification(message) {
-            const notification = document.createElement('div');
-            notification.style.cssText = `
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                background: #003300;
-                color: #00ff00;
-                padding: 15px;
-                border: 1px solid #005500;
-                border-radius: 3px;
-                z-index: 10000;
-                font-size: 14px;
-                box-shadow: 0 0 15px rgba(0, 255, 0, 0.3);
-            `;
-            notification.innerHTML = `<i class="fas fa-check-circle"></i> ${message}`;
-            document.body.appendChild(notification);
-            
-            setTimeout(() => {
-                notification.style.opacity = '0';
-                setTimeout(() => notification.remove(), 300);
-            }, 3000);
-        }
-
-        // Escape HTML to prevent XSS
-        function escapeHtml(text) {
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
-        }
-
-        // Initialize
-        document.addEventListener('DOMContentLoaded', function() {
-            // Focus on password input
-            document.getElementById('password').focus();
-            
-            // Enter key for search
-            document.getElementById('searchInput').addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    searchData();
-                }
-            });
-            
-            // Pre-populate with example data if empty
-            if (osintDatabase.length === 0) {
-                osintDatabase = [
-                    {
-                        identifier: "example123@gmail.com",
-                        data: "Name: Alex Johnson\nLocation: San Francisco, CA\nPhone: (555) 987-6543\nIP History: 73.158.122.45, 104.28.135.67\nSocial Media: @alexj_insta, @alexj_twitter\nOccupation: Software Engineer\nAdditional Notes: Frequently uses coffee shop WiFi",
-                        timestamp: new Date().toISOString(),
-                        id: 1
-                    },
-                    {
-                        identifier: "shadow_user42",
-                        data: "Name: Unknown\nAlias: Shadow\nPlatforms: 4chan, Reddit (/u/shadow_anon)\nEmail: shadow42@protonmail.com\nVPN Usage: ExpressVPN, NordVPN\nPattern: Active 2AM-5AM EST\nThreat Level: Low",
-                        timestamp: new Date().toISOString(),
-                        id: 2
-                    }
-                ];
-                localStorage.setItem('tniOsintDatabase', JSON.stringify(osintDatabase));
-            }
-        });
-
-        // Export/Import functionality (optional)
-        function exportDatabase() {
-            if (!isAuthenticated) return;
-            
-            const dataStr = JSON.stringify(osintDatabase, null, 2);
-            const dataBlob = new Blob([dataStr], {type: 'application/json'});
-            const url = URL.createObjectURL(dataBlob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'tni_osint_database_' + new Date().toISOString().split('T')[0] + '.json';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-        }
-
-        function importDatabase(event) {
-            if (!isAuthenticated) return;
-            
-            const file = event.target.files[0];
-            if (!file) return;
-            
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                try {
-                    const importedData = JSON.parse(e.target.result);
-                    if (confirm(`Import ${importedData.length} entries? This will replace current database.`)) {
-                        osintDatabase = importedData;
-                        localStorage.setItem('tniOsintDatabase', JSON.stringify(osintDatabase));
-                        updateStats();
-                        searchData();
-                        showNotification("Database imported successfully");
-                    }
-                } catch (error) {
-                    alert("Invalid database file!");
-                }
-            };
-            reader.readAsText(file);
-        }
-    </script>
 </body>
 </html>
