@@ -32,21 +32,39 @@ const OSINT_DATABASE = [
 ];
 
 // ================================
-// SEARCH (CASE-INSENSITIVE)
+// INIT AFTER DOM LOAD
+// ================================
+
+document.addEventListener("DOMContentLoaded", () => {
+    // set stats safely AFTER DOM exists
+    const total = document.getElementById("totalEntries");
+    if (total) total.textContent = OSINT_DATABASE.length;
+
+    // allow Enter key search
+    const input = document.getElementById("searchInput");
+    if (input) {
+        input.addEventListener("keydown", e => {
+            if (e.key === "Enter") searchData();
+        });
+    }
+});
+
+// ================================
+// SEARCH (CASE-INSENSITIVE + PARTIAL)
 // ================================
 
 function searchData() {
-    const searchTerm = document
-        .getElementById("searchInput")
-        .value
-        .trim()
-        .toLowerCase();
-
+    const input = document.getElementById("searchInput");
     const resultsDisplay = document.getElementById("resultsDisplay");
+    const lastSearch = document.getElementById("lastSearch");
+
+    if (!input || !resultsDisplay) return;
+
+    const searchTerm = input.value.trim().toLowerCase();
 
     if (!searchTerm) {
         resultsDisplay.innerHTML =
-            '<div class="no-results">Enter an identifier to search</div>';
+            `<div class="no-results">Enter an identifier to search</div>`;
         return;
     }
 
@@ -54,8 +72,12 @@ function searchData() {
         entry.identifier.toLowerCase().includes(searchTerm)
     );
 
-    document.getElementById("lastSearch").textContent =
-        searchTerm.length > 15 ? searchTerm.slice(0, 15) + "..." : searchTerm;
+    if (lastSearch) {
+        lastSearch.textContent =
+            searchTerm.length > 15
+                ? searchTerm.slice(0, 15) + "..."
+                : searchTerm;
+    }
 
     if (matches.length === 0) {
         resultsDisplay.innerHTML =
@@ -72,12 +94,6 @@ function searchData() {
         </div>
     `).join("");
 }
-
-// ================================
-// STATS
-// ================================
-
-document.getElementById("totalEntries").textContent = OSINT_DATABASE.length;
 
 // ================================
 // HELPERS
