@@ -17,7 +17,7 @@ const OSINT_DATABASE = [
     {
         identifiers: ["dogedoge12335"],
         info: [
-            "Stealer Logs [Origin: www.roblox.com] [Unknown Date]: [Username: dogedoge12335] [Password: 0645840867]",
+            "Stealer Logs [Origin: www.roblox.com] [Unknown Date]: [Username: dogedoge12335] [Password: 0645840867]"
         ]
     },
     {
@@ -110,7 +110,6 @@ function searchData() {
         lastSearchEl.textContent = searchTerm.length > 20 ? searchTerm.slice(0, 20) + "..." : searchTerm;
     }
 
-    // Filter logic: Checks for exact match across the identifiers array
     const matches = OSINT_DATABASE.filter(entry => {
         return entry.identifiers.some(id => id.toLowerCase().trim() === searchTerm);
     });
