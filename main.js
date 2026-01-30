@@ -99,6 +99,7 @@ function searchData() {
 
     if (!inputEl || !resultsDisplay) return;
 
+    // Direct match check
     const searchTerm = inputEl.value.trim().toLowerCase();
 
     if (!searchTerm) {
@@ -110,6 +111,7 @@ function searchData() {
         lastSearchEl.textContent = searchTerm.length > 20 ? searchTerm.slice(0, 20) + "..." : searchTerm;
     }
 
+    // Matching Logic
     const matches = OSINT_DATABASE.filter(entry => {
         return entry.identifiers.some(id => id.toLowerCase().trim() === searchTerm);
     });
@@ -119,6 +121,7 @@ function searchData() {
         return;
     }
 
+    // Render results
     resultsDisplay.innerHTML = matches.map(entry => `
         <div class="result-card">
             <div class="identifier">${escapeHtml(entry.identifiers[0])}</div>
