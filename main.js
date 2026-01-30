@@ -15,6 +15,19 @@ const OSINT_DATABASE = [
         ]
     },
     {
+        identifiers: ["dogedoge12335"],
+        info: [
+            "Stealer Logs [Origin: www.roblox.com] [Unknown Date]: [Username: dogedoge12335] [Password: 0645840867]",
+        ]
+    },
+    {
+        identifiers: ["OriginallyMadeCob"],
+        info: [
+            "Stealer Logs [Origin: www.roblox.com] [Unknown Date]: [Username: OriginallyMadeCob] [Password: GwpPA5FUC7UuPfE]",
+            "Stealer Logs [Origin: www.roblox.com] [Unknown Date]: [Username: OriginallyMadeCob] [Password: Kokko#2556]"
+        ]
+    },
+    {
         identifiers: ["whokeii", "joperjimenez@yahoo.com", "Julius Christopher", "Cabelto Jimenez", "joper jimenez", "f100000442853045"],
         info: [
             "Twitter.com (Scraping Data) [2022-07]: [Username: Whokeii] [ProfileName: joper jimenez] [Email: joperjimenez@yahoo.com]",
