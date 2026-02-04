@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <title>YANIX</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
@@ -103,24 +102,13 @@ body {
 .search-card::before { left: 25%; }
 .search-card::after { right: 20%; }
 
-.search-card:hover::before {
-    animation: bubbleFloat 2.6s ease-out forwards;
-}
-
-.search-card:hover::after {
-    animation: bubbleFloat 3.2s ease-out forwards;
-}
+.search-card:hover::before { animation: bubbleFloat 2.6s ease-out forwards; }
+.search-card:hover::after { animation: bubbleFloat 3.2s ease-out forwards; }
 
 @keyframes bubbleFloat {
-    0% {
-        transform: translateY(0) scale(0.8);
-        opacity: 0;
-    }
+    0% { transform: translateY(0) scale(0.8); opacity: 0; }
     30% { opacity: 0.4; }
-    100% {
-        transform: translateY(-160px) scale(1.2);
-        opacity: 0;
-    }
+    100% { transform: translateY(-160px) scale(1.2); opacity: 0; }
 }
 
 /* ---------- Search Input ---------- */
@@ -141,16 +129,12 @@ body {
     transition: box-shadow 0.3s ease, border 0.3s ease;
 }
 
-.search-row input::placeholder {
-    color: #8f8f8f;
-}
+.search-row input::placeholder { color: #8f8f8f; }
 
 .search-row input:hover,
 .search-row input:focus {
     border: 1px solid rgba(255,255,255,0.25);
-    box-shadow:
-        0 0 0 2px rgba(255,255,255,0.05),
-        0 0 40px rgba(255,255,255,0.12);
+    box-shadow: 0 0 0 2px rgba(255,255,255,0.05), 0 0 40px rgba(255,255,255,0.12);
 }
 
 .search-row button {
@@ -161,7 +145,10 @@ body {
     background: linear-gradient(135deg, #e5e5e5, #a5a5a5);
     color: #111;
     cursor: pointer;
+    transition: transform 0.2s;
 }
+
+.search-row button:active { transform: scale(0.96); }
 
 /* ---------- Pills ---------- */
 .search-options {
@@ -187,6 +174,38 @@ body {
     padding: 24px;
     margin-bottom: 20px;
     border: 1px solid rgba(255,255,255,0.06);
+    min-height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Dynamic Result Styling */
+.profile-view {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    width: 100%;
+    text-align: left;
+}
+.profile-img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: #222;
+    border: 2px solid #333;
+}
+.profile-info h2 { font-size: 20px; color: white; margin-bottom: 4px; }
+.profile-info p { color: #888; font-size: 14px; margin-bottom: 2px; }
+.id-badge {
+    display: inline-block;
+    background: #222;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-family: monospace;
+    font-size: 12px;
+    color: #aaa;
+    margin-top: 8px;
 }
 
 /* ---------- Stats ---------- */
@@ -242,8 +261,8 @@ body {
 
     <div class="search-card">
         <div class="search-row">
-            <input placeholder="Roblox username, UserID, or display name">
-            <button>Search</button>
+            <input type="text" id="searchInput" placeholder="Roblox username (e.g. Roblox)">
+            <button id="searchBtn">Search</button>
         </div>
 
         <div class="search-options">
@@ -254,8 +273,8 @@ body {
         </div>
     </div>
 
-    <div class="result-card">
-        Awaiting Roblox query…
+    <div class="result-card" id="resultContainer">
+        <span style="color: #666;">Awaiting Roblox query…</span>
     </div>
 
     <div class="stats">
@@ -264,11 +283,11 @@ body {
             Roblox Accounts Logged
         </div>
         <div class="stat">
-            <div class="stat-value">—</div>
+            <div class="stat-value" id="sessionQuery">0</div>
             Session Query
         </div>
         <div class="stat">
-            <div class="stat-value">Live</div>
+            <div class="stat-value" style="color:#4fffa7;">Live</div>
             Index Status
         </div>
     </div>
@@ -278,6 +297,84 @@ body {
     </div>
 
 </div>
+
+<script>
+    const searchInput = document.getElementById('searchInput');
+    const searchBtn = document.getElementById('searchBtn');
+    const resultContainer = document.getElementById('resultContainer');
+    const sessionQueryStat = document.getElementById('sessionQuery');
+    let queryCount = 0;
+
+    // Trigger search on Enter key
+    searchInput.addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') {
+            performSearch();
+        }
+    });
+
+    searchBtn.addEventListener('click', performSearch);
+
+    async function performSearch() {
+        const username = searchInput.value.trim();
+        
+        if (!username) return;
+
+        // UI Loading State
+        resultContainer.innerHTML = '<span style="color: #fff;">Scanning database...</span>';
+        searchBtn.innerText = '...';
+        
+        try {
+            // 1. Get User ID from Username
+            // Note: We use a CORS proxy (corsproxy.io) because Roblox does not allow browser fetch requests directly.
+            const searchUrl = `https://users.roblox.com/v1/users/search?keyword=${username}&limit=10`;
+            const proxyUrl = 'https://corsproxy.io/?' + encodeURIComponent(searchUrl);
+
+            const response = await fetch(proxyUrl);
+            const data = await response.json();
+
+            if (data.data && data.data.length > 0) {
+                const user = data.data[0]; // Get best match
+                
+                // 2. Fetch Avatar Thumbnail
+                const avatarUrl = `https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${user.id}&size=150x150&format=Png&isCircular=false`;
+                const avatarProxy = 'https://corsproxy.io/?' + encodeURIComponent(avatarUrl);
+                const avatarRes = await fetch(avatarProxy);
+                const avatarData = await avatarRes.json();
+                
+                let imageUrl = '';
+                if(avatarData.data && avatarData.data.length > 0) {
+                    imageUrl = avatarData.data[0].imageUrl;
+                }
+
+                // 3. Render Result
+                resultContainer.innerHTML = `
+                    <div class="profile-view">
+                        <img src="${imageUrl}" class="profile-img" alt="Avatar">
+                        <div class="profile-info">
+                            <h2>${user.displayName}</h2>
+                            <p>@${user.name}</p>
+                            <span class="id-badge">ID: ${user.id}</span>
+                            <span class="id-badge" style="color:#4fffa7; border:1px solid #4fffa722;">Verified</span>
+                        </div>
+                    </div>
+                `;
+
+                // Update Stats
+                queryCount++;
+                sessionQueryStat.innerText = queryCount;
+
+            } else {
+                resultContainer.innerHTML = '<span style="color: #ff5555;">User not found in index.</span>';
+            }
+
+        } catch (error) {
+            console.error(error);
+            resultContainer.innerHTML = '<span style="color: #ff5555;">Connection Error: Rate limit or CORS.</span>';
+        }
+
+        searchBtn.innerText = 'Search';
+    }
+</script>
 
 </body>
 </html>
