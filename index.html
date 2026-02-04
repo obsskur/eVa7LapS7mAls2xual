@@ -17,7 +17,7 @@
 
 body {
     min-height: 100vh;
-    background: linear-gradient(180deg, #0e0e0e, #060606);
+    background: linear-gradient(180deg, #0e0e0e, #050505);
     color: #e5e5e5;
 }
 
@@ -74,22 +74,56 @@ body {
     color: #b5b5b5;
 }
 
-/* ---------- Search ---------- */
+/* ---------- Search Card ---------- */
 .search-card {
+    position: relative;
     background: #141414;
     border-radius: 22px;
     padding: 30px;
     border: 1px solid rgba(255,255,255,0.08);
     box-shadow: 0 30px 80px rgba(0,0,0,0.8);
     margin-bottom: 50px;
-    animation: glow 6s ease-in-out infinite;
+    overflow: hidden;
 }
 
-@keyframes glow {
-    0%,100% { box-shadow: 0 0 40px rgba(255,255,255,0.04); }
-    50% { box-shadow: 0 0 70px rgba(255,255,255,0.08); }
+/* Floating bubble particles */
+.search-card::before,
+.search-card::after {
+    content: "";
+    position: absolute;
+    bottom: -40px;
+    width: 140px;
+    height: 140px;
+    background: radial-gradient(circle, rgba(255,255,255,0.25), transparent 60%);
+    opacity: 0;
+    filter: blur(8px);
+    pointer-events: none;
 }
 
+.search-card::before { left: 25%; }
+.search-card::after { right: 20%; }
+
+.search-card:hover::before {
+    animation: bubbleFloat 2.6s ease-out forwards;
+}
+
+.search-card:hover::after {
+    animation: bubbleFloat 3.2s ease-out forwards;
+}
+
+@keyframes bubbleFloat {
+    0% {
+        transform: translateY(0) scale(0.8);
+        opacity: 0;
+    }
+    30% { opacity: 0.4; }
+    100% {
+        transform: translateY(-160px) scale(1.2);
+        opacity: 0;
+    }
+}
+
+/* ---------- Search Input ---------- */
 .search-row {
     display: flex;
     gap: 16px;
@@ -102,6 +136,21 @@ body {
     background: #1c1c1c;
     border: 1px solid rgba(255,255,255,0.1);
     color: white;
+    font-size: 15px;
+    outline: none;
+    transition: box-shadow 0.3s ease, border 0.3s ease;
+}
+
+.search-row input::placeholder {
+    color: #8f8f8f;
+}
+
+.search-row input:hover,
+.search-row input:focus {
+    border: 1px solid rgba(255,255,255,0.25);
+    box-shadow:
+        0 0 0 2px rgba(255,255,255,0.05),
+        0 0 40px rgba(255,255,255,0.12);
 }
 
 .search-row button {
@@ -143,7 +192,7 @@ body {
 /* ---------- Stats ---------- */
 .stats {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 20px;
     margin-top: 60px;
 }
@@ -184,43 +233,48 @@ body {
     </div>
 
     <div class="hero">
-        <h1>Investigate Across Multiple Data Sources</h1>
-        <p>Unified intelligence correlation for identities and online activity.</p>
+        <h1>Roblox Intelligence Search</h1>
+        <p>
+            OSINT correlation engine focused on Roblox identities,
+            usernames, and ecosystem activity.
+        </p>
     </div>
 
     <div class="search-card">
         <div class="search-row">
-            <input placeholder="e.g. IP address, email, username">
+            <input placeholder="Roblox username, UserID, or display name">
             <button>Search</button>
         </div>
 
         <div class="search-options">
-            <div class="pill">Automated</div>
-            <div class="pill">Manual</div>
-            <div class="pill">Secure Search</div>
-            <div class="pill">15+ Sources</div>
+            <div class="pill">Username Tracking</div>
+            <div class="pill">Avatar History</div>
+            <div class="pill">Group Mapping</div>
+            <div class="pill">Leak Correlation</div>
         </div>
     </div>
 
-    <div class="result-card">Awaiting query…</div>
+    <div class="result-card">
+        Awaiting Roblox query…
+    </div>
 
     <div class="stats">
         <div class="stat">
-            <div class="stat-value">0</div>
-            Entries Indexed
+            <div class="stat-value">25K+</div>
+            Roblox Accounts Logged
         </div>
         <div class="stat">
             <div class="stat-value">—</div>
             Session Query
         </div>
         <div class="stat">
-            <div class="stat-value">15+</div>
-            Data Sources
+            <div class="stat-value">Live</div>
+            Index Status
         </div>
     </div>
 
     <div class="info">
-        Yanix — investigative intelligence interface.
+        Yanix — Roblox-focused OSINT & intelligence platform.
     </div>
 
 </div>
